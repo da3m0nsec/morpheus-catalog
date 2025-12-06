@@ -14,17 +14,17 @@ This directory contains production-ready Kubernetes manifests organized by deplo
 
 ```
 kubernetes/
-├── 01-simple-webapp/        # Simple web application deployment
-├── 02-3tier-k8s/            # 3-tier application on Kubernetes
-├── 03-microservices-k8s/    # Microservices architecture
-├── 04-monitoring-stack/     # Prometheus, Grafana monitoring
-├── 05-stateful-apps/        # Stateful applications (databases)
+├── simple-webapp/        # Simple web application deployment
+├── 3tier-k8s/            # 3-tier application on Kubernetes
+├── microservices-k8s/    # Microservices architecture
+├── monitoring-stack/     # Prometheus, Grafana monitoring
+├── stateful-apps/        # Stateful applications (databases)
 └── README.md                # This file
 ```
 
 ## Deployment Examples
 
-### 1. [Simple Web Application](./01-simple-webapp/)
+### 1. [Simple Web Application](./simple-webapp/)
 **Complexity**: ⭐ Basic | **Components**: 2
 
 Simple nginx web application with LoadBalancer service.
@@ -38,7 +38,7 @@ Simple nginx web application with LoadBalancer service.
 
 ---
 
-### 2. [3-Tier Application](./02-3tier-k8s/)
+### 2. [3-Tier Application](./3tier-k8s/)
 **Complexity**: ⭐⭐⭐ Intermediate | **Components**: 6+
 
 Classic 3-tier architecture on Kubernetes.
@@ -53,7 +53,7 @@ Classic 3-tier architecture on Kubernetes.
 
 ---
 
-### 3. [Microservices Architecture](./03-microservices-k8s/)
+### 3. [Microservices Architecture](./microservices-k8s/)
 **Complexity**: ⭐⭐⭐⭐ Advanced | **Components**: 12+
 
 Modern microservices platform with service mesh capabilities.
@@ -69,7 +69,7 @@ Modern microservices platform with service mesh capabilities.
 
 ---
 
-### 4. [Monitoring Stack](./04-monitoring-stack/)
+### 4. [Monitoring Stack](./monitoring-stack/)
 **Complexity**: ⭐⭐⭐ Intermediate | **Components**: 8+
 
 Complete observability platform for Kubernetes.
@@ -85,7 +85,7 @@ Complete observability platform for Kubernetes.
 
 ---
 
-### 5. [Stateful Applications](./05-stateful-apps/)
+### 5. [Stateful Applications](./stateful-apps/)
 **Complexity**: ⭐⭐⭐ Intermediate | **Components**: 6+
 
 Databases and stateful workloads on Kubernetes.
@@ -132,7 +132,7 @@ git clone <repository-url>
 cd morpheus-catalog/kubernetes
 
 # Choose a deployment
-cd 01-simple-webapp
+cd simple-webapp
 
 # Review the manifests
 ls -la

@@ -602,8 +602,8 @@ max_connections = 200
 
 ## Next Steps
 
-- Implement [Observability Platform](../03-observability/) for comprehensive monitoring
-- Add [Microservices](../02-microservices/) architecture patterns
+- Implement [Observability Platform](../observability/) for comprehensive monitoring
+- Add [Microservices](../microservices/) architecture patterns
 - Implement blue-green deployments
 - Add geographic redundancy
 - Implement automated failover testing

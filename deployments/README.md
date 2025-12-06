@@ -12,7 +12,7 @@ Each deployment example showcases different aspects of Morpheus:
 
 ## Deployment Examples
 
-### 1. [3-Tier Web Application](./01-stack-3tier/)
+### 1. [3-Tier Web Application](./stack-3tier/)
 **Complexity**: ⭐⭐⭐ Intermediate
 
 Classic web application architecture with separate web, application, and database tiers.
@@ -34,7 +34,7 @@ Classic web application architecture with separate web, application, and databas
 
 ---
 
-### 2. [Modern Microservices Stack](./02-microservices/)
+### 2. [Modern Microservices Stack](./microservices/)
 **Complexity**: ⭐⭐⭐⭐ Advanced
 
 Complete microservices platform with API gateway, multiple services, messaging, and caching.
@@ -57,7 +57,7 @@ Complete microservices platform with API gateway, multiple services, messaging, 
 
 ---
 
-### 3. [Observability Platform](./03-observability/)
+### 3. [Observability Platform](./observability/)
 **Complexity**: ⭐⭐ Basic
 
 Complete monitoring and observability stack for infrastructure and applications.
@@ -79,7 +79,7 @@ Complete monitoring and observability stack for infrastructure and applications.
 
 ---
 
-### 4. [High Availability Web](./04-ha-web/)
+### 4. [High Availability Web](./ha-web/)
 **Complexity**: ⭐⭐⭐⭐ Advanced
 
 Highly available web application with load balancing, redundancy, and failover.
@@ -207,7 +207,7 @@ All deployments work on both clouds through:
 
 2. **Choose a deployment**
    ```bash
-   cd 01-stack-3tier
+   cd stack-3tier
    cat README.md
    ```
 

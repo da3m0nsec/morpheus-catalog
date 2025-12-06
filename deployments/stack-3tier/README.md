@@ -506,6 +506,6 @@ Import these dashboards:
 
 ## Next Steps
 
-- Deploy [Microservices Stack](../02-microservices/) for more complex scenarios
-- Add [Observability Platform](../03-observability/) for comprehensive monitoring
-- Implement [High Availability](../04-ha-web/) patterns for production
+- Deploy [Microservices Stack](../microservices/) for more complex scenarios
+- Add [Observability Platform](../observability/) for comprehensive monitoring
+- Implement [High Availability](../ha-web/) patterns for production

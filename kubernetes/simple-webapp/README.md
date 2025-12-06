@@ -325,4 +325,4 @@ kubectl delete namespace simple-webapp
 - Implement SSL/TLS with cert-manager
 - Add monitoring with Prometheus
 - Implement CI/CD pipeline
-- Try [3-Tier Application](../02-3tier-k8s/) for more complex deployment
+- Try [3-Tier Application](../3tier-k8s/) for more complex deployment

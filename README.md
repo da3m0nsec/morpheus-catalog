@@ -33,17 +33,17 @@ morpheus-catalog/
 │   └── docker/                  # Container platform
 │
 ├── deployments/           # Complete VM-based deployment architectures
-│   ├── 01-stack-3tier/          # 3-Tier web application
-│   ├── 02-microservices/        # Modern microservices platform
-│   ├── 03-observability/        # Monitoring and observability stack
-│   └── 04-ha-web/               # High availability web application
+│   ├── stack-3tier/             # 3-Tier web application
+│   ├── microservices/           # Modern microservices platform
+│   ├── observability/           # Monitoring and observability stack
+│   └── ha-web/                  # High availability web application
 │
 ├── kubernetes/            # Kubernetes deployment examples
-│   ├── 01-simple-webapp/        # Simple web application
-│   ├── 02-3tier-k8s/            # 3-tier on Kubernetes
-│   ├── 03-microservices-k8s/    # Microservices on Kubernetes
-│   ├── 04-monitoring-stack/     # Prometheus + Grafana
-│   └── 05-stateful-apps/        # StatefulSets (databases)
+│   ├── simple-webapp/           # Simple web application
+│   ├── 3tier-k8s/               # 3-tier on Kubernetes
+│   ├── microservices-k8s/       # Microservices on Kubernetes
+│   ├── monitoring-stack/        # Prometheus + Grafana
+│   └── stateful-apps/           # StatefulSets (databases)
 │
 └── README.md              # This file
 ```
@@ -116,7 +116,7 @@ Explore complete deployment architectures:
 cd deployments/
 
 # Choose a deployment
-cd 01-stack-3tier/
+cd stack-3tier/
 
 # Read the architecture documentation
 cat README.md
@@ -141,7 +141,7 @@ Classic web application with separate presentation, application, and data tiers.
 
 **Best for**: DevOps teams, standard web applications
 
-[View Details →](./deployments/01-stack-3tier/)
+[View Details →](./deployments/stack-3tier/)
 
 ---
 
@@ -160,7 +160,7 @@ Complete microservices platform with API gateway, multiple services, and messagi
 
 **Best for**: DevOps teams, modern cloud-native applications
 
-[View Details →](./deployments/02-microservices/)
+[View Details →](./deployments/microservices/)
 
 ---
 
@@ -179,7 +179,7 @@ Comprehensive monitoring and observability stack.
 
 **Best for**: Operations teams, SRE, infrastructure monitoring
 
-[View Details →](./deployments/03-observability/)
+[View Details →](./deployments/observability/)
 
 ---
 
@@ -198,7 +198,7 @@ Production-ready HA web application with redundancy and failover.
 
 **Best for**: Infrastructure teams, production deployments
 
-[View Details →](./deployments/04-ha-web/)
+[View Details →](./deployments/ha-web/)
 
 ## Features
 
@@ -300,7 +300,7 @@ curl http://localhost
 
 ```bash
 # Deploy 3-tier application
-cd deployments/01-stack-3tier
+cd deployments/stack-3tier
 
 # Follow the deployment guide
 cat README.md

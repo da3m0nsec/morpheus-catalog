@@ -578,7 +578,7 @@ Consider adding:
 
 ## Next Steps
 
-- Implement [Observability Platform](../03-observability/) for enhanced monitoring
-- Add [High Availability](../04-ha-web/) patterns for production readiness
+- Implement [Observability Platform](../observability/) for enhanced monitoring
+- Add [High Availability](../ha-web/) patterns for production readiness
 - Integrate CI/CD pipelines with Morpheus
 - Implement service mesh (Istio/Linkerd)

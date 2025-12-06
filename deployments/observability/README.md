@@ -531,8 +531,8 @@ stress --cpu 2 --timeout 60s
 
 ## Next Steps
 
-- Integrate with [3-Tier Application](../01-stack-3tier/) for app monitoring
-- Monitor [Microservices](../02-microservices/) platform
-- Add [High Availability](../04-ha-web/) to monitoring stack
+- Integrate with [3-Tier Application](../stack-3tier/) for app monitoring
+- Monitor [Microservices](../microservices/) platform
+- Add [High Availability](../ha-web/) to monitoring stack
 - Implement log aggregation with ELK stack
 - Add distributed tracing (Jaeger/Zipkin)
