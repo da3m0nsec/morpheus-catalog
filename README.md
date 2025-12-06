@@ -15,31 +15,35 @@ This repository provides:
 
 ```
 morpheus-catalog/
-├── deployments/           # Complete deployment architectures
+├── installs/              # Service installation scripts (17 services)
+│   ├── nginx/                   # Web server and reverse proxy
+│   ├── apache/                  # Apache HTTP Server
+│   ├── haproxy/                 # Load balancer
+│   ├── tomcat/                  # Java application server
+│   ├── postgresql/              # Relational database
+│   ├── mongodb/                 # NoSQL document database
+│   ├── mysql/                   # MySQL/MariaDB relational database
+│   ├── redis/                   # In-memory data store
+│   ├── elasticsearch/           # Search and analytics engine
+│   ├── prometheus/              # Metrics collection and monitoring
+│   ├── node_exporter/           # System metrics exporter
+│   ├── grafana/                 # Visualization and dashboards
+│   ├── zabbix/                  # Enterprise monitoring solution
+│   ├── rabbitmq/                # Message broker
+│   └── docker/                  # Container platform
+│
+├── deployments/           # Complete VM-based deployment architectures
 │   ├── 01-stack-3tier/          # 3-Tier web application
 │   ├── 02-microservices/        # Modern microservices platform
 │   ├── 03-observability/        # Monitoring and observability stack
 │   └── 04-ha-web/               # High availability web application
 │
-├── nginx/                 # Web server and reverse proxy
-├── apache/                # Apache HTTP Server
-├── haproxy/               # Load balancer
-│
-├── tomcat/                # Java application server
-│
-├── postgresql/            # Relational database
-├── mongodb/               # NoSQL document database
-├── mysql/                 # MySQL/MariaDB relational database
-├── redis/                 # In-memory data store
-├── elasticsearch/         # Search and analytics engine
-│
-├── prometheus/            # Metrics collection and monitoring
-├── node_exporter/         # System metrics exporter
-├── grafana/               # Visualization and dashboards
-├── zabbix/                # Enterprise monitoring solution
-│
-├── rabbitmq/              # Message broker
-├── docker/                # Container platform
+├── kubernetes/            # Kubernetes deployment examples
+│   ├── 01-simple-webapp/        # Simple web application
+│   ├── 02-3tier-k8s/            # 3-tier on Kubernetes
+│   ├── 03-microservices-k8s/    # Microservices on Kubernetes
+│   ├── 04-monitoring-stack/     # Prometheus + Grafana
+│   └── 05-stateful-apps/        # StatefulSets (databases)
 │
 └── README.md              # This file
 ```
@@ -94,7 +98,7 @@ Each service has its own directory with installation script and documentation:
 
 ```bash
 # Navigate to service directory
-cd nginx/
+cd installs/nginx/
 
 # Read the documentation
 cat README.md
@@ -284,7 +288,7 @@ git clone <repository-url>
 cd morpheus-catalog
 
 # Install nginx
-cd nginx
+cd installs/nginx
 sudo bash install_nginx.sh
 
 # Verify installation
