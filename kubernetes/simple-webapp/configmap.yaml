@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webapp-config
+  namespace: simple-webapp
+  labels:
+    app: webapp
+data:
+  # Custom nginx configuration
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log /var/log/nginx/access.log main;
+
+        sendfile on;
+        tcp_nopush on;
+        keepalive_timeout 65;
+        gzip on;
+
+        server {
+            listen 80;
+            server_name _;
+
+            location / {
+                root /usr/share/nginx/html;
+                index index.html;
+            }
+
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+
+            location /metrics {
+                stub_status on;
+                access_log off;
+            }
+        }
+    }
+
+  # Custom HTML content
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Simple Web Application on Kubernetes</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 800px;
+                margin: 50px auto;
+                padding: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+            }
+            .container {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 10px;
+                padding: 40px;
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+                backdrop-filter: blur(4px);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+            }
+            h1 {
+                font-size: 2.5em;
+                margin-bottom: 20px;
+            }
+            .info {
+                background: rgba(255, 255, 255, 0.2);
+                padding: 20px;
+                border-radius: 5px;
+                margin: 20px 0;
+            }
+            .status {
+                color: #4ade80;
+                font-weight: bold;
+                font-size: 1.2em;
+            }
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            li {
+                padding: 10px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            a {
+                color: #fbbf24;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>🚀 Simple Web Application</h1>
+            <p class="status">✓ Running on Kubernetes</p>
+
+            <div class="info">
+                <h2>Application Information</h2>
+                <ul>
+                    <li><strong>Platform:</strong> Kubernetes</li>
+                    <li><strong>Web Server:</strong> nginx 1.25</li>
+                    <li><strong>Deployment:</strong> Simple Web App</li>
+                    <li><strong>Status:</strong> <span style="color: #4ade80;">Healthy</span></li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h2>Features</h2>
+                <ul>
+                    <li>✓ High Availability (3 replicas)</li>
+                    <li>✓ Load Balancing</li>
+                    <li>✓ Rolling Updates</li>
+                    <li>✓ Auto-scaling Ready</li>
+                    <li>✓ Health Checks Configured</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <h2>Endpoints</h2>
+                <ul>
+                    <li><a href="/health" target="_blank">/health</a> - Health check endpoint</li>
+                    <li><a href="/metrics" target="_blank">/metrics</a> - nginx metrics (stub_status)</li>
+                </ul>
+            </div>
+
+            <div class="info">
+                <p><strong>Hostname:</strong> <span id="hostname">Loading...</span></p>
+                <p><strong>Time:</strong> <span id="time"></span></p>
+            </div>
+        </div>
+
+        <script>
+            // Display current time
+            function updateTime() {
+                document.getElementById('time').textContent = new Date().toLocaleString();
+            }
+            setInterval(updateTime, 1000);
+            updateTime();
+
+            // Try to get hostname (will work if set by environment variable)
+            fetch('/health')
+                .then(() => {
+                    document.getElementById('hostname').textContent = window.location.hostname;
+                })
+                .catch(() => {
+                    document.getElementById('hostname').textContent = 'Unknown';
+                });
+        </script>
+    </body>
+    </html>
