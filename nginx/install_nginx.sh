@@ -126,9 +126,27 @@ install_nginx() {
     esac
 }
 
+# Detect appropriate nginx user
+detect_nginx_user() {
+    # Check which users exist on the system
+    if id -u nginx &>/dev/null; then
+        echo "nginx"
+    elif id -u www-data &>/dev/null; then
+        echo "www-data"
+    elif id -u http &>/dev/null; then
+        echo "http"
+    else
+        echo "nobody"
+    fi
+}
+
 # Configure nginx
 configure_nginx() {
     print_info "Configuring nginx..."
+
+    # Detect the appropriate user
+    local nginx_user=$(detect_nginx_user)
+    print_info "Using nginx user: $nginx_user"
 
     # Backup existing config
     if [[ -f "${NGINX_CONFIG_PATH}/nginx.conf" ]]; then
@@ -137,8 +155,8 @@ configure_nginx() {
     fi
 
     # Create main nginx configuration
-    cat > "${NGINX_CONFIG_PATH}/nginx.conf" << 'EOF'
-user nginx;
+    cat > "${NGINX_CONFIG_PATH}/nginx.conf" << EOF
+user ${nginx_user};
 worker_processes auto;
 error_log /var/log/nginx/error.log warn;
 pid /var/run/nginx.pid;
@@ -151,9 +169,9 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
-    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
-                    '$status $body_bytes_sent "$http_referer" '
-                    '"$http_user_agent" "$http_x_forwarded_for"';
+    log_format main '\$remote_addr - \$remote_user [\$time_local] "\$request" '
+                    '\$status \$body_bytes_sent "\$http_referer" '
+                    '"\$http_user_agent" "\$http_x_forwarded_for"';
 
     access_log /var/log/nginx/access.log main;
 
