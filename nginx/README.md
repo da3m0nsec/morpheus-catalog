@@ -1,6 +1,6 @@
 # Nginx Linux Installer
 
-A Python script that installs and configures nginx on Linux systems.
+A bash script that installs and configures nginx on Linux systems.
 
 ## Supported Operating Systems
 
@@ -11,16 +11,40 @@ A Python script that installs and configures nginx on Linux systems.
 
 ## Requirements
 
-- Python 3.6 or higher
-- Administrative privileges (sudo)
+- Bash shell
+- Root privileges (sudo)
 - Linux operating system
+
+## Installation
+
+1. Download the script:
+```bash
+curl -O https://raw.githubusercontent.com/yourusername/yourrepo/main/nginx/install_nginx.sh
+chmod +x install_nginx.sh
+```
+
+Or clone the repository:
+```bash
+git clone https://github.com/yourusername/yourrepo.git
+cd yourrepo/nginx
+chmod +x install_nginx.sh
+```
 
 ## Usage
 
-### Install, Configure, and Start nginx (One Command)
+### Quick Start - Complete Installation
+
+Install, configure, and start nginx with a single command:
 
 ```bash
-sudo python3 install_nginx.py --all
+sudo ./install_nginx.sh
+```
+
+Note: If no options are provided, `--all` is used by default.
+
+You can also explicitly use:
+```bash
+sudo ./install_nginx.sh --all
 ```
 
 This will:
@@ -35,13 +59,13 @@ This will:
 #### Install nginx
 
 ```bash
-sudo python3 install_nginx.py --install
+sudo ./install_nginx.sh --install
 ```
 
 #### Configure nginx
 
 ```bash
-sudo python3 install_nginx.py --configure
+sudo ./install_nginx.sh --configure
 ```
 
 Note: This automatically creates a default website with a modern, responsive design.
@@ -49,19 +73,19 @@ Note: This automatically creates a default website with a modern, responsive des
 #### Test Configuration
 
 ```bash
-sudo python3 install_nginx.py --test
+sudo ./install_nginx.sh --test
 ```
 
 #### Start nginx Service
 
 ```bash
-sudo python3 install_nginx.py --start
+sudo ./install_nginx.sh --start
 ```
 
 #### Check nginx Status
 
 ```bash
-sudo python3 install_nginx.py --status
+sudo ./install_nginx.sh --status
 ```
 
 ### Combining Operations
@@ -69,7 +93,13 @@ sudo python3 install_nginx.py --status
 You can combine multiple operations in a single command:
 
 ```bash
-sudo python3 install_nginx.py --install --configure --start
+sudo ./install_nginx.sh --install --configure --start
+```
+
+### Get Help
+
+```bash
+./install_nginx.sh --help
 ```
 
 ## Features
@@ -80,6 +110,8 @@ sudo python3 install_nginx.py --install --configure --start
 - **Default Website**: Creates a beautiful, modern landing page with animations
 - **Service Management**: Starts and enables nginx service using systemctl or service commands
 - **Configuration Testing**: Validates nginx configuration before applying
+- **Colored Output**: Clear, colored terminal output for better readability
+- **Error Handling**: Exits on errors to prevent partial installations
 
 ## Default Website
 
@@ -115,10 +147,18 @@ The script creates a basic nginx configuration with:
 
 ### Permission Denied
 
-Make sure you're running the script with administrative privileges:
+Make sure you're running the script with root privileges:
 
 ```bash
-sudo python3 install_nginx.py --all
+sudo ./install_nginx.sh --all
+```
+
+### Script Not Executable
+
+If you get a "Permission denied" error, make the script executable:
+
+```bash
+chmod +x install_nginx.sh
 ```
 
 ### nginx Already Installed
@@ -129,20 +169,37 @@ If nginx is already installed, the script will detect it and skip installation. 
 
 The script supports Debian/Ubuntu, RHEL/CentOS/Fedora, and Arch Linux. If you're using a different distribution, you may need to install nginx manually.
 
-## Example Workflow
+## Example Workflows
+
+### Fresh Installation
 
 ```bash
-# Complete installation and setup
-sudo python3 install_nginx.py --all
+# Download and run the script
+curl -O https://example.com/install_nginx.sh
+chmod +x install_nginx.sh
+sudo ./install_nginx.sh
 
 # Verify nginx is running
 curl http://localhost
 
 # Or open in a browser
 xdg-open http://localhost
+```
 
-# Check status
-sudo python3 install_nginx.py --status
+### Update Configuration Only
+
+```bash
+# Reconfigure nginx (backs up existing config)
+sudo ./install_nginx.sh --configure --test
+
+# Restart nginx to apply changes
+sudo systemctl restart nginx
+```
+
+### Check Status
+
+```bash
+sudo ./install_nginx.sh --status
 ```
 
 ## Customization
@@ -154,6 +211,37 @@ After installation, you can:
 3. Modify the main configuration in `/etc/nginx/nginx.conf`
 4. Test your changes with `nginx -t`
 5. Reload nginx with `systemctl reload nginx`
+
+### Example: Add a New Site
+
+```bash
+# Create a new site configuration
+sudo nano /etc/nginx/conf.d/mysite.conf
+
+# Test the configuration
+sudo nginx -t
+
+# Reload nginx
+sudo systemctl reload nginx
+```
+
+## Uninstallation
+
+To remove nginx:
+
+```bash
+# Debian/Ubuntu
+sudo apt-get remove --purge nginx nginx-common
+sudo rm -rf /etc/nginx /var/www/html
+
+# RHEL/CentOS/Fedora
+sudo dnf remove nginx  # or: sudo yum remove nginx
+sudo rm -rf /etc/nginx /var/www/html
+
+# Arch Linux
+sudo pacman -Rns nginx
+sudo rm -rf /etc/nginx /var/www/html
+```
 
 ## License
 
