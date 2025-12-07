@@ -5,6 +5,11 @@
 
 set -e
 
+# Suppress debconf warnings for non-interactive installation
+export DEBIAN_FRONTEND=noninteractive
+export NEEDRESTART_MODE=a
+export NEEDRESTART_SUSPEND=1
+
 echo "========================================="
 echo "Apache OpenServerless Installation"
 echo "========================================="
@@ -56,14 +61,14 @@ done
 echo "Installing dependencies..."
 case $OS in
     ubuntu|debian)
-        apt-get update
-        apt-get install -y curl wget git jq
+        apt-get update -qq
+        apt-get install -y -qq curl wget git jq
         ;;
     centos|rhel|fedora)
         if command -v dnf &> /dev/null; then
-            dnf install -y curl wget git jq
+            dnf install -y -q curl wget git jq
         else
-            yum install -y curl wget git jq
+            yum install -y -q curl wget git jq
         fi
         ;;
     arch)
@@ -74,6 +79,7 @@ case $OS in
         exit 1
         ;;
 esac
+echo "Dependencies installed successfully"
 
 # Install k3s if needed
 if [ "$INSTALL_K3S" = true ]; then
@@ -136,17 +142,44 @@ if ! command -v ops &> /dev/null; then
     echo "Downloading ops CLI..."
     curl -sL $OPS_INSTALL_URL | bash
 
+    # Add to PATH for current session
+    export PATH="$HOME/.local/bin:$PATH"
+
+    # Also add to root's PATH if running as sudo
+    if [ -n "$SUDO_USER" ]; then
+        export PATH="/root/.local/bin:$PATH"
+    fi
+
     # Verify installation
     if command -v ops &> /dev/null; then
         echo "ops CLI installed successfully"
         ops version
     else
-        echo "Error: ops CLI installation failed"
-        exit 1
+        # Try direct path if command not found
+        if [ -f "$HOME/.local/bin/ops" ]; then
+            echo "ops CLI installed at $HOME/.local/bin/ops"
+            $HOME/.local/bin/ops version
+            # Create symlink to /usr/local/bin for system-wide access
+            ln -sf "$HOME/.local/bin/ops" /usr/local/bin/ops
+            echo "Created symlink at /usr/local/bin/ops"
+        else
+            echo "Error: ops CLI installation failed"
+            exit 1
+        fi
     fi
 else
     echo "ops CLI is already installed"
     ops version
+fi
+
+# Ensure ops is in PATH
+OPS_CMD="ops"
+if ! command -v ops &> /dev/null; then
+    if [ -f "/usr/local/bin/ops" ]; then
+        OPS_CMD="/usr/local/bin/ops"
+    elif [ -f "$HOME/.local/bin/ops" ]; then
+        OPS_CMD="$HOME/.local/bin/ops"
+    fi
 fi
 
 # Install OpenServerless
@@ -162,7 +195,7 @@ kubectl create namespace openserverless --dry-run=client -o yaml | kubectl apply
 echo "Installing OpenServerless platform..."
 
 # Initialize OpenServerless
-ops admin setup
+$OPS_CMD admin setup
 
 # Wait for deployment
 echo "Waiting for OpenServerless components to be ready..."
@@ -173,13 +206,13 @@ echo ""
 echo "Configuring ops CLI..."
 
 # Configure ops for local access
-API_HOST=$(ops admin apihost)
+API_HOST=$($OPS_CMD admin apihost)
 echo "API Host: $API_HOST"
 
 # Test the installation
 echo ""
 echo "Testing OpenServerless installation..."
-if ops namespace list &> /dev/null; then
+if $OPS_CMD namespace list &> /dev/null; then
     echo "OpenServerless is responding correctly!"
 else
     echo "Warning: OpenServerless might not be fully ready. Please wait a few more minutes."
