@@ -1,0 +1,17 @@
+---
+# Jenkins Role Handlers
+
+- name: restart jenkins
+  systemd:
+    name: jenkins
+    state: restarted
+    enabled: yes
+  when: ansible_service_mgr == "systemd"
+
+- name: restart jenkins (service)
+  service:
+    name: jenkins
+    state: restarted
+    enabled: yes
+  when: ansible_service_mgr != "systemd"
+

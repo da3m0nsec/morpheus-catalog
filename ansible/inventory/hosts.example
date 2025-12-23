@@ -1,0 +1,31 @@
+# Ansible Inventory Example
+# Copy this file to 'hosts' and customize with your actual host information
+
+# Jenkins servers group
+[jenkins_servers]
+# Example with IP address
+jenkins1 ansible_host=192.168.1.10 ansible_user=ubuntu
+
+# Example with hostname (requires DNS resolution)
+# jenkins2 ansible_host=jenkins.example.com ansible_user=admin
+
+# Example with SSH key
+# jenkins3 ansible_host=192.168.1.12 ansible_user=deploy ansible_ssh_private_key_file=~/.ssh/id_rsa
+
+# Example with password (not recommended for production)
+# jenkins4 ansible_host=192.168.1.13 ansible_user=root ansible_password=your_password
+
+# CentOS/Rocky Linux example
+# jenkins5 ansible_host=192.168.1.14 ansible_user=centos
+
+# Group variables can be set here
+[jenkins_servers:vars]
+# ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# ansible_python_interpreter=/usr/bin/python3
+
+# All hosts group
+[all:vars]
+# Common variables for all hosts
+# ansible_connection=ssh
+# ansible_ssh_timeout=30
+

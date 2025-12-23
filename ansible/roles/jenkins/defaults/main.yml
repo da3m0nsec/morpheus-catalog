@@ -1,0 +1,33 @@
+---
+# Jenkins Role Default Variables
+
+# Jenkins version to install (use 'latest' for latest stable)
+jenkins_version: "latest"
+
+# Jenkins HTTP port
+jenkins_port: 8080
+
+# Jenkins home directory
+jenkins_home: "/var/lib/jenkins"
+
+# OS-specific Java package names
+jenkins_java_package_debian: "openjdk-11-jdk"
+jenkins_java_package_redhat: "java-11-openjdk-devel"
+
+# Jenkins repository URLs
+jenkins_repo_url_debian: "https://pkg.jenkins.io/debian-stable"
+jenkins_repo_url_redhat: "https://pkg.jenkins.io/redhat-stable"
+
+# Jenkins repository key URLs
+jenkins_key_url_debian: "https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key"
+jenkins_key_url_redhat: "https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key"
+
+# Jenkins repository key ID (for Debian/Ubuntu)
+jenkins_key_id: "9B7D32F2D50582E6"
+
+# Additional packages to install
+jenkins_additional_packages: []
+
+# Firewall configuration (if needed)
+jenkins_configure_firewall: false
+

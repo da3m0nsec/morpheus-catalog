@@ -1,0 +1,200 @@
+---
+# Jenkins Role Tasks
+
+- name: Detect OS family
+  set_fact:
+    jenkins_os_family: "{{ ansible_os_family | lower }}"
+    jenkins_java_package: "{{ jenkins_java_package_debian if ansible_os_family == 'Debian' else jenkins_java_package_redhat }}"
+    jenkins_repo_url: "{{ jenkins_repo_url_debian if ansible_os_family == 'Debian' else jenkins_repo_url_redhat }}"
+    jenkins_key_url: "{{ jenkins_key_url_debian if ansible_os_family == 'Debian' else jenkins_key_url_redhat }}"
+
+- name: Check if Jenkins is already installed
+  command: which jenkins
+  register: jenkins_installed
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Install Java (Debian/Ubuntu)
+  block:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Java
+      apt:
+        name: "{{ jenkins_java_package }}"
+        state: present
+
+  when:
+    - ansible_os_family == "Debian"
+    - jenkins_installed.rc != 0
+
+- name: Install Java (CentOS/Rocky/RHEL)
+  block:
+    - name: Install Java
+      yum:
+        name: "{{ jenkins_java_package }}"
+        state: present
+      when: ansible_pkg_mgr == "yum"
+
+    - name: Install Java (DNF)
+      dnf:
+        name: "{{ jenkins_java_package }}"
+        state: present
+      when: ansible_pkg_mgr == "dnf"
+
+  when:
+    - ansible_os_family == "RedHat"
+    - jenkins_installed.rc != 0
+
+- name: Add Jenkins repository GPG key (Debian/Ubuntu)
+  block:
+    - name: Download Jenkins GPG key
+      get_url:
+        url: "{{ jenkins_key_url }}"
+        dest: /tmp/jenkins-key.gpg
+        mode: '0644'
+
+    - name: Add Jenkins GPG key to apt
+      apt_key:
+        url: "{{ jenkins_key_url }}"
+        state: present
+
+    - name: Add Jenkins APT repository
+      apt_repository:
+        repo: "deb {{ jenkins_repo_url }} binary/"
+        state: present
+        filename: jenkins
+        update_cache: yes
+
+  when:
+    - ansible_os_family == "Debian"
+    - jenkins_installed.rc != 0
+
+- name: Add Jenkins repository (CentOS/Rocky/RHEL)
+  block:
+    - name: Download Jenkins repository GPG key
+      get_url:
+        url: "{{ jenkins_key_url }}"
+        dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-jenkins
+        mode: '0644'
+
+    - name: Import Jenkins GPG key
+      rpm_key:
+        key: /etc/pki/rpm-gpg/RPM-GPG-KEY-jenkins
+        state: present
+
+    - name: Add Jenkins YUM repository
+      yum_repository:
+        name: jenkins
+        description: "Jenkins Repository"
+        baseurl: "{{ jenkins_repo_url }}"
+        gpgcheck: yes
+        gpgkey: "{{ jenkins_key_url }}"
+        enabled: yes
+      when: ansible_pkg_mgr == "yum"
+
+    - name: Add Jenkins DNF repository
+      yum_repository:
+        name: jenkins
+        description: "Jenkins Repository"
+        baseurl: "{{ jenkins_repo_url }}"
+        gpgcheck: yes
+        gpgkey: "{{ jenkins_key_url }}"
+        enabled: yes
+      when: ansible_pkg_mgr == "dnf"
+
+  when:
+    - ansible_os_family == "RedHat"
+    - jenkins_installed.rc != 0
+
+- name: Install Jenkins package (Debian/Ubuntu)
+  apt:
+    name: jenkins
+    state: present
+    update_cache: yes
+  when:
+    - ansible_os_family == "Debian"
+    - jenkins_installed.rc != 0
+  notify: restart jenkins
+
+- name: Install Jenkins package (CentOS/Rocky/RHEL)
+  block:
+    - name: Install Jenkins with YUM
+      yum:
+        name: jenkins
+        state: present
+      when: ansible_pkg_mgr == "yum"
+      notify: restart jenkins
+
+    - name: Install Jenkins with DNF
+      dnf:
+        name: jenkins
+        state: present
+      when: ansible_pkg_mgr == "dnf"
+      notify: restart jenkins
+
+  when:
+    - ansible_os_family == "RedHat"
+    - jenkins_installed.rc != 0
+
+- name: Install additional packages
+  package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ jenkins_additional_packages }}"
+  when:
+    - jenkins_additional_packages | length > 0
+    - jenkins_installed.rc != 0
+
+- name: Start and enable Jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+  when: ansible_service_mgr == "systemd"
+
+- name: Start and enable Jenkins service (service)
+  service:
+    name: jenkins
+    state: started
+    enabled: yes
+  when: ansible_service_mgr != "systemd"
+
+- name: Wait for Jenkins to be ready
+  uri:
+    url: "http://localhost:{{ jenkins_port }}"
+    status_code: [200, 403]
+    method: GET
+  register: jenkins_ready
+  until: jenkins_ready.status in [200, 403]
+  retries: 30
+  delay: 10
+  ignore_errors: yes
+
+- name: Display Jenkins initial admin password location
+  debug:
+    msg:
+      - "Jenkins has been installed and started successfully!"
+      - "Jenkins is running on port {{ jenkins_port }}"
+      - "Access Jenkins at: http://{{ ansible_default_ipv4.address }}:{{ jenkins_port }}"
+      - "Initial admin password location: /var/lib/jenkins/secrets/initialAdminPassword"
+      - "To get the password, run: sudo cat /var/lib/jenkins/secrets/initialAdminPassword"
+
+- name: Verify Jenkins service status
+  systemd:
+    name: jenkins
+  register: jenkins_status
+  check_mode: false
+  when: ansible_service_mgr == "systemd"
+
+- name: Verify Jenkins service status (service)
+  service_facts:
+
+- name: Display Jenkins service status
+  debug:
+    msg: "Jenkins service is {{ jenkins_status.status.ActiveState | default('running') }}"
+  when: ansible_service_mgr == "systemd"
+

@@ -1,0 +1,51 @@
+---
+# Jenkins Installation Playbook
+# This playbook installs Jenkins CI/CD server on target hosts
+
+- name: Install and configure Jenkins
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  pre_tasks:
+    - name: Ensure system is up to date (Debian/Ubuntu)
+      apt:
+        update_cache: yes
+        upgrade: dist
+      when: ansible_os_family == "Debian"
+
+    - name: Ensure system is up to date (CentOS/Rocky/RHEL)
+      yum:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat" and ansible_pkg_mgr == "yum"
+
+    - name: Ensure system is up to date (CentOS/Rocky/RHEL with DNF)
+      dnf:
+        name: "*"
+        state: latest
+      when: ansible_os_family == "RedHat" and ansible_pkg_mgr == "dnf"
+
+  roles:
+    - jenkins
+
+  post_tasks:
+    - name: Verify Jenkins is accessible
+      uri:
+        url: "http://localhost:{{ jenkins_port }}"
+        status_code: [200, 403]
+        method: GET
+      register: jenkins_check
+      ignore_errors: yes
+
+    - name: Display installation summary
+      debug:
+        msg:
+          - "=========================================="
+          - "Jenkins Installation Complete!"
+          - "=========================================="
+          - "Jenkins URL: http://{{ ansible_default_ipv4.address }}:{{ jenkins_port }}"
+          - "Initial admin password: /var/lib/jenkins/secrets/initialAdminPassword"
+          - "Service status: {{ 'Running' if jenkins_check.status in [200, 403] else 'Check manually' }}"
+          - "=========================================="
+

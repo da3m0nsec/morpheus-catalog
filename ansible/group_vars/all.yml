@@ -1,0 +1,22 @@
+---
+# Group Variables for All Hosts
+# These variables apply to all hosts in the inventory
+
+# Jenkins Configuration
+jenkins_port: 8080
+jenkins_version: "latest"
+
+# Additional packages to install with Jenkins
+jenkins_additional_packages: []
+
+# Firewall configuration
+jenkins_configure_firewall: false
+
+# Ansible Configuration
+ansible_python_interpreter: auto_silent
+ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+
+# Connection settings
+ansible_connection: ssh
+ansible_ssh_timeout: 30
+
